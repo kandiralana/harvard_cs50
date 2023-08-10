@@ -1,0 +1,30 @@
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    // ask the user how tall the pyramid should be
+    int tall;
+
+    do
+    {
+        tall = get_int("Height: ");
+    }
+    while (tall < 1 || tall > 8);
+
+    // print the pyramid
+    for (int t = 0; t < tall; t++)
+    {
+        for (int w = tall - 1; w > t; w--)
+        {
+            printf(" ");
+        }
+
+        for (int i = -1; i < t; i++)
+        {
+            printf("#");
+        }
+
+        printf("\n");
+    }
+}
