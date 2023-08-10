@@ -1,0 +1,160 @@
+#include <cs50.h>
+#include <math.h>
+#include <stdio.h>
+
+long cardInput(void);
+int getSize(long card_num);
+void reverseArray(int numbers[], int size);
+void swap(int *a, int *b);
+int getSum(int numbers[], int size);
+void cardTypeDetect(int numbers[]);
+
+const int MIN_SIZE = 13;
+const int MAX_SIZE = 16;
+
+int main(void)
+{
+    // promt for input
+    long card_num = cardInput();
+    int size = getSize(card_num);
+
+    // make an array
+    int numbers[size];
+
+    long temp = card_num;
+    for (int i = 0; i < size; i++)
+    {
+        numbers[i] = temp % 10;
+        temp = temp / 10;
+    }
+
+    // array reverse
+    reverseArray(numbers, size);
+
+    // calculate checksum
+    int sum = getSum(numbers, size);
+
+
+    // check & report (VISA/AMEX/MASTERCARD/INVALID)
+
+    if (sum % 10 != 0)
+    {
+        printf("INVALID\n");
+    }
+    else
+    {
+        cardTypeDetect(numbers);
+    }
+}
+
+long cardInput(void)
+{
+    long card_num;
+    int size;
+
+    do
+    {
+    card_num = get_long("Number: ");
+    size = getSize(card_num);
+    }
+    while (size > MAX_SIZE & size < MIN_SIZE);
+
+    return card_num;
+}
+
+int getSize(long card_num)
+{
+    int size = 0;
+    long tempp = card_num;
+    while (tempp > 0)
+    {
+        tempp /= 10;
+        size++;
+    }
+    return size;
+}
+
+void swap(int *a, int *b)
+{
+    int temp;
+    temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void reverseArray(int numbers[], int size)
+{
+    for (int i = 0; i < size / 2; i++)
+    {
+        swap(&numbers[i], &numbers[size - i - 1]);
+    }
+}
+
+int getSum(int numbers[], int size)
+{
+    int tempCardNumber[size];
+    for (int tcn = 0; tcn < size; tcn++)
+    {
+        tempCardNumber[tcn] = numbers[tcn];
+    }
+
+    int sum = 0;
+    for (int nm = 0; nm < size; nm += 2)
+    {
+        tempCardNumber[nm] *= 2;
+        int x = (int) floor(log10(tempCardNumber[nm])) + 1;
+
+        if (x != 1 & x > 0)
+        {
+            int t = tempCardNumber[nm];
+
+            tempCardNumber[nm] = t % 10;
+            sum += tempCardNumber[nm];
+
+            t = t / 10;
+            sum += t;
+        }
+        else
+        {
+            sum += tempCardNumber[nm];
+        }
+    }
+
+    for (int nm = 1; nm < size; nm += 2)
+    {
+        sum += tempCardNumber[nm];
+    }
+
+    return sum;
+}
+
+void cardTypeDetect(int numbers[])
+// All American Express numbers start with 34 or 37
+// most MasterCard numbers start with 51, 52, 53, 54, 55
+// all Visa numbers start with 4
+{
+    if (numbers[0] == 5)
+    {
+        if (numbers[1] == 1 || numbers[1] == 2 || numbers[1] == 3 || numbers[1] == 4 || numbers[1] == 5)
+        {
+            printf("MASTERCARD\n");
+        }
+        else
+            printf("INVALID\n");
+    }
+    else if (numbers[0] == 3)
+    {
+        if (numbers[1] == 7 || numbers[1] == 4)
+        {
+            printf("AMEX\n");
+        }
+        else
+            printf("INVALID\n");
+    }
+    else if (numbers[0] == 4)
+    {
+        printf("VISA\n");
+    }
+    else
+        printf("INVALID\n");
+}
