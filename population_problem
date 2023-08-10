@@ -1,0 +1,70 @@
+#include <cs50.h>
+#include <stdio.h>
+
+int get_start(void);
+int get_end(int start_size);
+int calc_years(int start_size, int end_size);
+void res_print(int years);
+
+int main(void)
+{
+    // Prompt for start size
+    int start_size = get_start();
+
+    // Prompt for end size
+    int end_size = get_end(start_size);
+
+    // Calculate number of years until we reach end size
+    int years = calc_years(start_size, end_size);
+
+    // Print number of years
+    res_print(years);
+}
+
+int get_start(void) // input of actual population
+{
+    int act_quant;
+
+    do
+    {
+        act_quant = get_int("Start size: ");
+    }
+    while (act_quant < 9);
+
+    return act_quant;
+}
+
+int get_end(int start_size) // input of target population
+{
+    int tar_quant;
+
+    do
+    {
+        tar_quant = get_int("End size: ");
+    }
+    while (tar_quant < start_size);
+
+    return tar_quant;
+}
+
+int calc_years(int start_size, int end_size) // calculating the years to achieve that number
+{
+    int years = 0;
+    int temp = start_size;
+
+    int born = 3;
+    int died = 4;
+
+    while (temp < end_size)
+    {
+        temp += temp / born - temp / died;
+        years++;
+    }
+
+    return years;
+}
+
+void res_print(int years)
+{
+    printf("Years: %i \n", years);
+}
